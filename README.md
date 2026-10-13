@@ -7,10 +7,20 @@ single-page app, shipped as one Docker image.
 > Backend: Java 21 · Spring Boot · Spring Security (JWT) · JPA/Hibernate · Postgres (Neon)
 > Frontend: React 19 · TypeScript · Vite · React Router · Recharts
 
+## Live
+
+- **App:** https://ironlog-llgm.onrender.com
+- **API docs:** https://ironlog-llgm.onrender.com/swagger-ui.html
+- **Demo login:** `demo@ironlog.dev` / `demo-password-123` (seeded with a few
+  weeks of training history so the charts have something to show).
+
+Hosted on Render's free tier against a managed Neon Postgres database, so the
+first request after an idle spell can take ~30–60s to cold-start.
+
 ## Features
 
 - **Email + password auth** with stateless JWT sessions.
-- **Exercise library** with ~60 seeded movements across muscle groups and
+- **Exercise library** with 65 seeded movements across muscle groups and
   equipment, plus your own custom exercises.
 - **Session logging**: add exercises, add sets (reps, weight, optional RPE and
   set type), see live volume as you build the workout. Edit or delete later.
@@ -118,13 +128,18 @@ Full request/response schemas are in the OpenAPI docs at `/swagger-ui.html`.
 
 ## Deploy
 
-The included `render.yaml` provisions a Docker web service:
+The live service runs on Render as a Docker web service wired to this GitHub
+repo, so a push to `main` redeploys automatically:
 
 1. Push this repo to GitHub.
-2. In Render, create a Blueprint from the repo (or a Docker web service using the
-   root `Dockerfile`) and set `DATABASE_URL` to a Postgres instance (e.g. Neon).
-3. Deploy. Render generates `IRONLOG_JWT_SECRET` and health-checks
-   `/actuator/health`.
+2. Create a Docker web service from the repo (root `Dockerfile`), or apply the
+   included `render.yaml` as a Blueprint from the Render dashboard.
+3. Set `DATABASE_URL` to a Postgres instance (the live deploy uses Neon) and let
+   Render generate `IRONLOG_JWT_SECRET`. Health check: `/actuator/health`.
+
+`render.yaml` is kept as the declarative blueprint; the live service was created
+directly through the Render API, since the Render CLI can validate but not
+provision a blueprint.
 
 ## Notes
 

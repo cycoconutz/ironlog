@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: ironlog
+  datasource:
+    url: jdbc:h2:mem:ironlog;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  port: ${PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json,text/html,text/css,application/javascript
+  error:
+    include-stacktrace: never
+
+ironlog:
+  jwt:
+    # Override in production. Must be at least 32 bytes for HS256.
+    secret: ${IRONLOG_JWT_SECRET:dev-only-secret-change-me-0123456789abcdef}
+    ttl: PT168H
+  cors:
+    allowed-origins: ${IRONLOG_CORS_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    dev.ironlog: INFO

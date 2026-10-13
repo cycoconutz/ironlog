@@ -1,0 +1,12 @@
+# Keep the build context small: dependencies and build output are recreated in
+# the image, and VCS history is not needed to build.
+**/node_modules
+**/target
+**/dist
+backend/src/main/resources/static
+.git
+.gitignore
+e2e
+*.log
+*.png
+**/.DS_Store

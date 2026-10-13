@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    # Neon / Render inject a standard DATABASE_URL. When present it is parsed at
+    # startup (see DatabaseUrlSupport) into the JDBC properties below.
+    url: ${SPRING_DATASOURCE_URL:}
+    username: ${SPRING_DATASOURCE_USERNAME:}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 1
+      connection-timeout: 10000
+  jpa:
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
+
+ironlog:
+  cors:
+    # The SPA is served same-origin, so cross-origin access is off by default.
+    # Set IRONLOG_CORS_ORIGINS only if you host the frontend on another domain.
+    allowed-origins: ${IRONLOG_CORS_ORIGINS:}
+  jwt:
+    # No default in production: an unset or too-short value fails startup rather
+    # than silently signing real tokens with the development secret.
+    secret: ${IRONLOG_JWT_SECRET:}

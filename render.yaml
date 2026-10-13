@@ -1,0 +1,26 @@
+# Render Blueprint for IronLog - Spring Boot API + bundled React SPA, Dockerized.
+#
+# The build (see ../Dockerfile) compiles the React app, copies it into the
+# Spring Boot static resources, and packages a single runnable jar.
+services:
+  - type: web
+    name: ironlog
+    runtime: docker
+    plan: free
+    healthCheckPath: /actuator/health
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      # Signing key for JWTs. Render generates a strong value automatically.
+      - key: IRONLOG_JWT_SECRET
+        generateValue: true
+      # Any Postgres URL works: Neon, Render Postgres, etc.
+      #   postgresql://user:password@host/db?sslmode=require
+      # Parsed into JDBC settings at startup (see DatabaseUrlSupport).
+      - key: DATABASE_URL
+        sync: false
+      # The SPA is served same-origin, so cross-origin access is denied by
+      # default. Add IRONLOG_CORS_ORIGINS only if you host the frontend on a
+      # separate domain (then set it to that exact origin).

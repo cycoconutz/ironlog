@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RequireAuth } from './auth/RequireAuth';
 import { AppShell } from './components/AppShell';
+import { DemoAccountModal } from './components/DemoAccountModal';
 import { DashboardPage } from './pages/DashboardPage';
 import { ExercisesPage } from './pages/ExercisesPage';
 import { HistoryPage } from './pages/HistoryPage';
@@ -13,28 +14,31 @@ import { WorkoutDetailPage } from './pages/WorkoutDetailPage';
 
 export function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+    <>
+      <DemoAccountModal />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-      <Route
-        element={
-          <RequireAuth>
-            <AppShell />
-          </RequireAuth>
-        }
-      >
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/log" element={<LogPage />} />
-        <Route path="/log/:id" element={<LogPage />} />
-        <Route path="/history" element={<HistoryPage />} />
-        <Route path="/history/:id" element={<WorkoutDetailPage />} />
-        <Route path="/exercises" element={<ExercisesPage />} />
-        <Route path="/records" element={<RecordsPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Route>
+        <Route
+          element={
+            <RequireAuth>
+              <AppShell />
+            </RequireAuth>
+          }
+        >
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/log" element={<LogPage />} />
+          <Route path="/log/:id" element={<LogPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/history/:id" element={<WorkoutDetailPage />} />
+          <Route path="/exercises" element={<ExercisesPage />} />
+          <Route path="/records" element={<RecordsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }

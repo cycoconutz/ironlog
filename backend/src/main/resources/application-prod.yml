@@ -1,4 +1,12 @@
 spring:
+  # Faster cold start on the free tier: beans are built when first used, and
+  # JPA repositories finish initializing in the background.
+  main:
+    lazy-initialization: true
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
   datasource:
     # Neon / Render inject a standard DATABASE_URL. When present it is parsed at
     # startup (see DatabaseUrlSupport) into the JDBC properties below.

@@ -23,8 +23,18 @@ RUN mvn -B -q -DskipTests package
 FROM eclipse-temurin:21-jre AS runtime
 WORKDIR /app
 RUN useradd -r -u 1001 ironlog
-COPY --from=backend /app/target/*.jar app.jar
+
+# Render's free tier gives about 0.1 CPU, so JVM startup dominates the wake-up.
+# Unpack the jar, then do a training run that stops once the context is built
+# and saves the loaded classes to a CDS archive. It uses the default (H2)
+# profile because there is no database at build time.
+COPY --from=backend /app/target/*.jar /tmp/app.jar
+RUN java -Djarmode=tools -jar /tmp/app.jar extract --destination /app --force \
+    && rm /tmp/app.jar \
+    && java -XX:+UseSerialGC -XX:ArchiveClassesAtExit=app.jsa -Dspring.context.exit=onRefresh -jar app.jar \
+    && test -s app.jsa
 USER ironlog
 EXPOSE 8080
-ENV JAVA_OPTS="-XX:MaxRAMPercentage=75"
+# SerialGC and C1-only compilation trade peak throughput for startup speed.
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:SharedArchiveFile=app.jsa"
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

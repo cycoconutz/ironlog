@@ -87,7 +87,15 @@ public class SecurityConfig {
         configuration.setAllowCredentials(false);
         configuration.setMaxAge(3600L);
 
+        // The health check is public and read-only, so any site may read it (the
+        // status monitor on johndyates.com does). Everything else stays restricted.
+        CorsConfiguration health = new CorsConfiguration();
+        health.setAllowedOrigins(List.of("*"));
+        health.setAllowedMethods(List.of("GET"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // First match wins, so the health rule must come before the catch-all.
+        source.registerCorsConfiguration("/actuator/health", health);
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
